@@ -1,0 +1,9 @@
+﻿.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+.terraform.lock.hcl.backup
+data/
+.DS_Store
+
+.venv/

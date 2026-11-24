@@ -1,0 +1,30 @@
+﻿
+services:
+  floci:
+    image: floci/floci:latest
+    container_name: ucv-floci
+    ports:
+      - "4566:4566"
+    environment:
+      FLOCI_STORAGE_MODE: persistent
+      FLOCI_STORAGE_PERSISTENT_PATH: /app/data
+      FLOCI_RUN_AS_ROOT: "true"
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  glue5:
+    image: public.ecr.aws/glue/aws-glue-libs:5
+    container_name: ucv-glue5
+    depends_on:
+      - floci
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - ./pipelines:/home/hadoop/workspace/pipelines
+    working_dir: /home/hadoop/workspace
+    entrypoint: ["/bin/bash", "-lc"]
+    command: ["tail -f /dev/null"]
